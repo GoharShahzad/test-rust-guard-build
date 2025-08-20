@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>License Client</title>
+</head>
+<body>
+    <h1>License Client Prototype</h1>
+    <input id="licenseKey" placeholder="Enter license key"/>
+    <button id="activateBtn">Activate</button>
+    <p id="status"></p>
+    
+    <script type="module">
+    const keyInput = document.getElementById('licenseKey');
+    const btn = document.getElementById('activateBtn');
+    const status = document.getElementById('status');
+    
+    btn.addEventListener('click', async () => {
+        try {
+            await window.api.license.activate(keyInput.value);
+            status.innerText = 'Activated successfully!';
+        } catch(e) { status.innerText = 'Error: ' + e.message; }
+    });
+    </script>
+    
+</body>
+</html>

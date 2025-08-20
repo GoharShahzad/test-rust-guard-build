@@ -1,0 +1,25 @@
+{
+  "name": "electron-client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "base64url": "^3.0.1",
+    "electron": "^37.3.1",
+    "electron-builder": "^26.0.12",
+    "ffi-napi": "^4.0.3",
+    "keytar": "^7.9.0",
+    "ref-napi": "^3.0.3",
+    "systeminformation": "^5.27.7",
+    "tweetnacl": "^1.0.3",
+    "typescript": "^5.9.2",
+    "vite": "^6.3.5"
+  }
+}
