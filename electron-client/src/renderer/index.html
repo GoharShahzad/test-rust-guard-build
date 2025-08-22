@@ -1,105 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>License Client</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 2rem;
-    }
-    h1 {
-      color: #333;
-    }
-    input {
-      padding: 0.5rem;
-      font-size: 1rem;
-      width: 300px;
-    }
-    button {
-      padding: 0.5rem 1rem;
-      margin-left: 0.5rem;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-    #status {
-      margin-top: 1rem;
-      font-weight: bold;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Secure License App</title>
 </head>
 <body>
-  <h1>License Client Prototype</h1>
+<h1>License Status</h1>
+<button id="activate">Activate</button>
+<button id="check">Check</button>
+<button id="deactivate">Deactivate</button>
 
-  <div>
-    <input id="licenseKey" placeholder="Enter license key" />
-    <button id="activateBtn">Activate</button>
-    <button id="heartbeatBtn">Heartbeat</button>
-    <button id="deactivateBtn">Deactivate</button>
-    <button id="checkBtn">Check Validity</button>
-  </div>
+<script>
+const btnActivate = document.getElementById('activate');
+const btnCheck = document.getElementById('check');
+const btnDeactivate = document.getElementById('deactivate');
 
-  <p><strong>HWID:</strong> <span id="hwid">Loading...</span></p>
-  <p id="status"></p>
+btnActivate.onclick = async () => {
+  try {
+    const key = prompt('Enter License Key:');
+    await window.license.activate(key);
+    alert('Activated!');
+  } catch (e) { alert(e.message); }
+};
 
-  <script type="module">
-    const keyInput = document.getElementById("licenseKey");
-    const status = document.getElementById("status");
-    const hwidEl = document.getElementById("hwid");
+btnCheck.onclick = async () => {
+  const valid = await window.license.isValid();
+  alert(valid ? 'License valid' : 'License invalid');
+};
 
-    const activateBtn = document.getElementById("activateBtn");
-    const heartbeatBtn = document.getElementById("heartbeatBtn");
-    const deactivateBtn = document.getElementById("deactivateBtn");
-    const checkBtn = document.getElementById("checkBtn");
-
-    async function initHWID() {
-      try {
-        const hwid = await window.licenseAPI.getHWID();
-        hwidEl.innerText = hwid;
-      } catch (e) {
-        hwidEl.innerText = "Error fetching HWID";
-      }
-    }
-
-    activateBtn.addEventListener("click", async () => {
-      try {
-        const key = keyInput.value.trim();
-        const result = await window.licenseAPI.verifyLicense(key);
-        status.innerText = result?.message || "Activation request sent.";
-      } catch (e) {
-        status.innerText = "Error: " + e.message;
-      }
-    });
-
-    heartbeatBtn.addEventListener("click", async () => {
-      try {
-        const result = await window.api.license.heartbeat();
-        status.innerText = result?.message || "Heartbeat sent.";
-      } catch (e) {
-        status.innerText = "Error: " + e.message;
-      }
-    });
-
-    deactivateBtn.addEventListener("click", async () => {
-      try {
-        const result = await window.api.license.deactivate();
-        status.innerText = result?.message || "Deactivated.";
-      } catch (e) {
-        status.innerText = "Error: " + e.message;
-      }
-    });
-
-    checkBtn.addEventListener("click", async () => {
-      try {
-        const valid = await window.api.license.isValid();
-        status.innerText = valid ? "License is valid ✅" : "License is invalid ❌";
-      } catch (e) {
-        status.innerText = "Error: " + e.message;
-      }
-    });
-
-    // Load HWID on startup
-    initHWID();
-  </script>
+btnDeactivate.onclick = async () => {
+  await window.license.deactivate();
+  alert('Deactivated');
+};
+</script>
 </body>
 </html>

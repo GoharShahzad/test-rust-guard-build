@@ -1,33 +1,36 @@
-import keytar from 'keytar';
-import crypto from 'crypto';
+import { getNativeHWID } from './native.js';
+import { randomBytes } from 'crypto';
+import { ChaCha20Poly1305 } from 'chacha20poly1305';
+import argon2 from 'argon2';
 
-const SERVICE = 'com.example.license';
-const ACCOUNT = 'token-key';
-
-async function getOrCreateKey(): Promise<Buffer> {
-  const existing = await keytar.getPassword(SERVICE, ACCOUNT);
-  if (existing) return Buffer.from(existing, 'base64');
-  const key = crypto.randomBytes(32); // AES-256
-  await keytar.setPassword(SERVICE, ACCOUNT, key.toString('base64'));
-  return key;
+async function deriveKey(): Promise<Uint8Array> {
+  const hwid = getNativeHWID();
+  return argon2.hash(hwid, {
+    type: argon2.argon2id,
+    memoryCost: 65536,
+    hashLength: 32,
+    raw: true,
+  }) as Promise<Uint8Array>;
 }
 
-export async function encryptAndPack(plaintext: string): Promise<string> {
-  const key = await getOrCreateKey();
-  const iv = crypto.randomBytes(12);
-  const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
-  const ct = Buffer.concat([cipher.update(plaintext, 'utf8'), cipher.final()]);
-  const tag = cipher.getAuthTag();
-  return Buffer.concat([iv, tag, ct]).toString('base64'); // [12|16|N]
+export async function encryptAndPack(token: string): Promise<string> {
+  const key = await deriveKey();
+  const cipher = new ChaCha20Poly1305(key);
+  const nonce = randomBytes(12);
+  const ciphertext = cipher.encrypt(nonce, Buffer.from(token, 'utf8'), null);
+  return Buffer.concat([nonce, ciphertext]).toString('base64');
 }
 
-export async function unpackAndDecrypt(packedB64: string): Promise<string> {
-  const buf = Buffer.from(packedB64, 'base64');
-  const iv = buf.subarray(0, 12);
-  const tag = buf.subarray(12, 28);
-  const ct  = buf.subarray(28);
-  const key = await getOrCreateKey();
-  const dec = crypto.createDecipheriv('aes-256-gcm', key, iv);
-  dec.setAuthTag(tag);
-  return Buffer.concat([dec.update(ct), dec.final()]).toString('utf8');
+export async function unpackAndDecrypt(packed: string): Promise<string> {
+  const data = Buffer.from(packed, 'base64');
+  const nonce = data.subarray(0, 12);
+  const ciphertext = data.subarray(12);
+
+  const key = await deriveKey();
+  const cipher = new ChaCha20Poly1305(key);
+
+  const decrypted = cipher.decrypt(nonce, ciphertext, null);
+  if (!decrypted) throw new Error('Decryption failed');
+
+  return decrypted.toString('utf8');
 }

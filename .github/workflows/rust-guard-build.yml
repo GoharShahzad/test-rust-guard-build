@@ -33,7 +33,7 @@ jobs:
           cargo build --release
 
       - name: Prepare artifact folder
-        run: mkdir artifact
+        run: mkdir -p artifact
 
       - name: Copy binary - Windows
         if: matrix.os == 'windows-latest'
