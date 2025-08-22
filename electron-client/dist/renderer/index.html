@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>License Client</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+    }
+    h1 {
+      color: #333;
+    }
+    input {
+      padding: 0.5rem;
+      font-size: 1rem;
+      width: 300px;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      margin-left: 0.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    #status {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+  </style>
+  <script type="module" crossorigin src="/assets/index-Cvw7asWT.js"></script>
+</head>
+<body>
+  <h1>License Client Prototype</h1>
+
+  <div>
+    <input id="licenseKey" placeholder="Enter license key" />
+    <button id="activateBtn">Activate</button>
+    <button id="heartbeatBtn">Heartbeat</button>
+    <button id="deactivateBtn">Deactivate</button>
+    <button id="checkBtn">Check Validity</button>
+  </div>
+
+  <p><strong>HWID:</strong> <span id="hwid">Loading...</span></p>
+  <p id="status"></p>
+
+</body>
+</html>

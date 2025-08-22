@@ -1,0 +1,19 @@
+directories:
+  output: dist
+  buildResources: build
+appId: com.yourcompany.licenseclient
+productName: LicenseClient
+files:
+  - filter:
+      - dist/**
+      - src/**
+      - '!node_modules/.cache/**'
+extraResources:
+  - from: native/
+    to: native
+    filter:
+      - hwid_guard.dll
+win:
+  target: nsis
+  icon: build/icon.ico
+electronVersion: 37.3.1

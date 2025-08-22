@@ -81,4 +81,8 @@ class LicenseController extends Controller
         }
         return response()->json(['ok'=>true]);
     }
+    public function list(Request $r){
+        $licenses = License::get();
+        dd($licenses);
+    }
 }
