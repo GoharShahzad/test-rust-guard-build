@@ -23,18 +23,22 @@ jobs:
           profile: minimal
           override: true
 
-      - name: Install dependencies (Windows)
+      # Install dependencies for Windows
+      - name: Install MinGW on Windows
         if: matrix.os == 'windows-latest'
         run: choco install mingw -y
 
+      # Build Rust library
       - name: Build Rust library
         run: |
           cd electron-client/native
           cargo build --release
 
+      # Prepare artifact folder
       - name: Prepare artifact folder
         run: mkdir -p artifact
 
+      # Copy built library based on OS
       - name: Copy binary - Windows
         if: matrix.os == 'windows-latest'
         run: copy electron-client\native\target\release\hwid_guard.dll artifact\
@@ -47,6 +51,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: cp electron-client/native/target/release/libhwid_guard.so artifact/
 
+      # Upload the artifact
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
