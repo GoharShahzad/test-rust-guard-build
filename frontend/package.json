@@ -7,9 +7,9 @@
     "start": "electron .",
     "dev": "NODE_ENV=development electron .",
     "build": "electron-builder",
-    "build-rust": "node scripts/build-rust.js",
-    "pack": "npm run build-rust && electron-builder --dir",
-    "dist": "npm run build-rust && electron-builder",
+    "download-rust": "node scripts/download-rust.js",
+    "pack": "npm run download-rust && electron-builder --dir",
+    "dist": "npm run download-rust && electron-builder",
     "sign": "node scripts/sign-windows.js",
     "postinstall": "electron-builder install-app-deps"
   },
