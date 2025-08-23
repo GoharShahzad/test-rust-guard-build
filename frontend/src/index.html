@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Secure License App</title>
+</head>
+<body>
+<h1>License Status</h1>
+<button id="activate">Activate</button>
+<button id="check">Check</button>
+<button id="deactivate">Deactivate</button>
+
+<script>
+const btnActivate = document.getElementById('activate');
+const btnCheck = document.getElementById('check');
+const btnDeactivate = document.getElementById('deactivate');
+
+btnActivate.onclick = async () => {
+  try {
+    const key = prompt('Enter License Key:');
+    await window.license.activate(key);
+    alert('Activated!');
+  } catch (e) { alert(e.message); }
+};
+
+btnCheck.onclick = async () => {
+  const valid = await window.license.isValid();
+  alert(valid ? 'License valid' : 'License invalid');
+};
+
+btnDeactivate.onclick = async () => {
+  await window.license.deactivate();
+  alert('Deactivated');
+};
+</script>
+</body>
+</html>

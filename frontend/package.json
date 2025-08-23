@@ -1,0 +1,81 @@
+{
+  "name": "secure-todo-app",
+  "version": "1.0.0",
+  "description": "A secure todo app with advanced licensing",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "NODE_ENV=development electron .",
+    "build": "electron-builder",
+    "build-rust": "node scripts/build-rust.js",
+    "pack": "npm run build-rust && electron-builder --dir",
+    "dist": "npm run build-rust && electron-builder",
+    "sign": "node scripts/sign-windows.js",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "keywords": [
+    "electron",
+    "vue",
+    "laravel",
+    "rust",
+    "security",
+    "licensing"
+  ],
+  "author": "Your Name",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^22.0.0",
+    "electron-builder": "^24.0.0",
+    "ffi-napi": "^4.0.3",
+    "ref-napi": "^3.0.3",
+    "javascript-obfuscator": "^4.0.0",
+    "asar": "^3.2.0"
+  },
+  "dependencies": {
+    "axios": "^1.3.0",
+    "vue": "^3.2.47"
+  },
+  "build": {
+    "appId": "com.yourcompany.securetodo",
+    "productName": "Secure To-Do",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "node_modules/**/*",
+      "package.json",
+      "main.js",
+      "preload.js",
+      "rust-module/target/release/libelectron_secure_module.node"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icon.ico",
+      "signingHashAlgorithms": [
+        "sha256"
+      ],
+      "signAndEditExecutable": true,
+      "signDlls": true
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Secure To-Do"
+    },
+    "publish": {
+      "provider": "github",
+      "releaseType": "release"
+    },
+    "afterPack": "./scripts/after-pack.js"
+  }
+}
